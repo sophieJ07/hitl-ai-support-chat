@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+
+type ChatMessage = {
+  role: "user" | "ai";
+  content: string;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState("");
+
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage: ChatMessage = {
+      role: "user",
+      content: input,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+
+    // placeholder ai response 
+    const aiMessage: ChatMessage = {
+      role: "ai",
+      content: "This is a placeholder AI response.",
+    };
+
+    setMessages((prev) => [...prev, aiMessage]);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app-container">
+      <div className="header">Supportive AI Chat</div>
+
+      <div className="chat-container">
+        {messages.map((msg, idx) => (
+          <div key={idx} className={`message ${msg.role}`}>
+            {msg.content}
+          </div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+      <div className="input-container">
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Share your thoughts..."
+        />
+        <button onClick={sendMessage}>Send</button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
